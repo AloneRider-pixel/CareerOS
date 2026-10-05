@@ -1,0 +1,6 @@
+{
+  "name": "CareerOS — AI JobHunter",
+  "description": "AI-powered job discovery, verification, matching, resume tailoring, application routing, and tracking platform for software engineers in India.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

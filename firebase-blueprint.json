@@ -1,0 +1,132 @@
+{
+  "entities": {
+    "UserProfile": {
+      "collection": "users",
+      "fields": {
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "createdAt": { "type": "string" }
+      }
+    },
+    "CandidateProfile": {
+      "collection": "candidate_profiles",
+      "fields": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "education": { "type": "array" },
+        "graduationYear": { "type": "number" },
+        "location": { "type": "string" },
+        "relocationPreference": { "type": "string" },
+        "workModes": { "type": "array" },
+        "targetRoles": { "type": "array" },
+        "targetLocations": { "type": "array" },
+        "skills": { "type": "array" },
+        "experience": { "type": "array" },
+        "projects": { "type": "array" },
+        "certifications": { "type": "array" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      }
+    },
+    "Job": {
+      "collection": "jobs",
+      "fields": {
+        "jobId": { "type": "string" },
+        "canonicalTitle": { "type": "string" },
+        "company": { "type": "string" },
+        "companyId": { "type": "string" },
+        "location": { "type": "string" },
+        "workMode": { "type": "string" },
+        "description": { "type": "string" },
+        "requirements": { "type": "array" },
+        "preferredSkills": { "type": "array" },
+        "experienceMin": { "type": "number" },
+        "experienceMax": { "type": "number" },
+        "salary": { "type": "string" },
+        "employmentType": { "type": "string" },
+        "postingDate": { "type": "string" },
+        "status": { "type": "string" },
+        "officialUrl": { "type": "string" },
+        "applicationUrl": { "type": "string" },
+        "canonicalUrl": { "type": "string" },
+        "sources": { "type": "array" },
+        "sourceCount": { "type": "number" },
+        "verified": { "type": "boolean" },
+        "verificationConfidence": { "type": "number" },
+        "riskLevel": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" },
+        "lastVerifiedAt": { "type": "string" }
+      }
+    },
+    "JobMatch": {
+      "collection": "job_matches",
+      "fields": {
+        "jobId": { "type": "string" },
+        "userId": { "type": "string" },
+        "overallScore": { "type": "number" },
+        "technicalScore": { "type": "number" },
+        "experienceScore": { "type": "number" },
+        "roleScore": { "type": "number" },
+        "educationScore": { "type": "number" },
+        "locationScore": { "type": "number" },
+        "eligibility": { "type": "string" },
+        "priority": { "type": "string" },
+        "interviewProbability": { "type": "string" },
+        "matchingSkills": { "type": "array" },
+        "missingSkills": { "type": "array" },
+        "advantages": { "type": "array" },
+        "rejectionRisks": { "type": "array" },
+        "createdAt": { "type": "string" }
+      }
+    },
+    "Application": {
+      "collection": "applications",
+      "fields": {
+        "jobId": { "type": "string" },
+        "userId": { "type": "string" },
+        "status": { "type": "string" },
+        "dateFound": { "type": "string" },
+        "dateReady": { "type": "string" },
+        "dateApplied": { "type": "string" },
+        "lastUpdated": { "type": "string" },
+        "applicationUrl": { "type": "string" },
+        "resumeVersionId": { "type": "string" },
+        "notes": { "type": "string" },
+        "followUpDate": { "type": "string" },
+        "source": { "type": "string" },
+        "interviewStage": { "type": "string" }
+      }
+    },
+    "ResumeVersion": {
+      "collection": "resume_versions",
+      "fields": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "versionName": { "type": "string" },
+        "jobId": { "type": "string" },
+        "tailoredSummary": { "type": "string" },
+        "highlightedSkills": { "type": "array" },
+        "reorderedBullets": { "type": "array" },
+        "createdAt": { "type": "string" }
+      }
+    },
+    "SearchRun": {
+      "collection": "search_runs",
+      "fields": {
+        "searchRunId": { "type": "string" },
+        "startedAt": { "type": "string" },
+        "completedAt": { "type": "string" },
+        "queriesUsed": { "type": "array" },
+        "sourcesChecked": { "type": "array" },
+        "rawJobsFound": { "type": "number" },
+        "verifiedJobs": { "type": "number" },
+        "duplicatesRemoved": { "type": "number" },
+        "eligibleJobs": { "type": "number" },
+        "p0Count": { "type": "number" },
+        "p1Count": { "type": "number" }
+      }
+    }
+  }
+}
