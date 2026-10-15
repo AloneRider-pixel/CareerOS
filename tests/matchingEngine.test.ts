@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import type { CandidateProfile, Job } from '../src/types';
-import { MatchingEngine } from '../server/services/matchingEngine';
+import { MatchingEngine, mergeProfileSkills } from '../server/services/matchingEngine';
 
 // Synthetic data only. These fixtures do not describe a real candidate or job.
 const candidate: CandidateProfile = {
@@ -46,4 +46,24 @@ test('education from another year does not earn the 2025 batch advantage', async
   const other = { ...candidate, education: [{ ...candidate.education[0], graduationYear: 2024 }] };
   const result = await MatchingEngine.matchCandidateWithJob(other, job, false);
   assert.ok(!result.advantages.some((text) => text.includes('2025 batch')));
+});
+
+
+test('profile skill-group edits refresh matching and remove stale grouped skills', async () => {
+  const current = { ...candidate, allSkills: ['Python', 'ResumeOnly'] };
+  // ProfileView sends a full form including the old aggregate.
+  const edited = mergeProfileSkills(current, { ...current, primarySkills: ['Rust'], cloudSkills: [' Docker ', 'rust'] });
+  assert.deepEqual(edited.allSkills, ['Rust', 'Docker', 'ResumeOnly']);
+  const result = await MatchingEngine.matchCandidateWithJob(edited, {
+    ...job, requirements: ['Rust'], mandatoryRequirements: ['Rust'],
+  }, false);
+  assert.ok(result.matchingSkills.some((skill) => skill.toLowerCase() === 'rust'));
+  assert.ok(!result.matchingSkills.some((skill) => skill.toLowerCase() === 'python'));
+});
+
+test('partial skill edits preserve untouched groups and resume-only skills', () => {
+  const current = { ...candidate, aiSkills: ['RAG'], allSkills: ['Python', 'RAG', 'ResumeOnly'] };
+  const edited = mergeProfileSkills(current, { primarySkills: [] });
+  assert.deepEqual(edited.allSkills, ['RAG', 'ResumeOnly']);
+  assert.equal(mergeProfileSkills(current, { name: 'New Name' }).allSkills, current.allSkills);
 });
