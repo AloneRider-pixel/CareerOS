@@ -140,7 +140,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className="relative z-10 max-w-2xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-300 mb-3">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>Targeting 2025 SDE 1, AI & Backend Roles in India</span>
+            <span>Sample data - not real applications or candidate claims</span>
           </div>
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
             CareerOS — Job Search Operating System
@@ -432,7 +432,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              Cross-referencing your Graphic Era Hill University alumni network, former internship mentors, and open-source collaborators at your target employers.
+              Review contacts you add yourself. Demo data does not imply alumni, employment, or referral relationships.
             </p>
           </div>
 
