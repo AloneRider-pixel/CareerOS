@@ -681,3 +681,29 @@ export class MatchingEngine {
     return 'IGNORE';
   }
 }
+
+
+const skillGroups = ['primarySkills', 'aiSkills', 'dataSkills', 'cloudSkills', 'familiarSkills'] as const;
+
+// Keep the aggregate used by matching in sync with profile edits. Preserve
+// resume-only skills that have not been assigned to an editable group.
+export function mergeProfileSkills(
+  current: CandidateProfile,
+  updates: Partial<CandidateProfile>,
+): CandidateProfile {
+  const merged = { ...current, ...updates };
+  if (!skillGroups.some((key) => Object.prototype.hasOwnProperty.call(updates, key))) {
+    return merged;
+  }
+  const oldGrouped = new Set(skillGroups.flatMap((key) => current[key]).map((s) => s.trim().toLowerCase()));
+  const ungrouped = (updates.allSkills ?? current.allSkills).filter((s) => !oldGrouped.has(s.trim().toLowerCase()));
+  const skills = [...skillGroups.flatMap((key) => merged[key]), ...ungrouped];
+  const seen = new Set<string>();
+  merged.allSkills = skills.map((s) => s.trim()).filter((s) => {
+    const key = s.toLowerCase();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return merged;
+}
