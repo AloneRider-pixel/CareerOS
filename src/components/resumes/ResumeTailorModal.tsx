@@ -48,7 +48,7 @@ export const ResumeTailorModal: React.FC<ResumeTailorModalProps> = ({
   const handleCopyAll = () => {
     if (!tailoredData) return;
     const text = `# ${tailoredData.versionName}
-Candidate: ${candidate?.name || 'Himanshu Bisht'}
+Candidate: ${candidate?.name || 'Demo candidate'}
 Target Role: ${job.canonicalTitle} (${job.company})
 Match Score: ${tailoredData.matchScore}%
 
