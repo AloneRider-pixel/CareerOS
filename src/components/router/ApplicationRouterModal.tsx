@@ -176,10 +176,10 @@ export const ApplicationRouterModal: React.FC<ApplicationRouterModalProps> = ({
               <div className="flex items-center justify-between rounded bg-slate-900 px-3 py-2 border border-slate-800">
                 <div className="truncate pr-2">
                   <div className="text-[10px] text-slate-500">GitHub Profile</div>
-                  <div className="text-slate-200 truncate">{candidate.links?.github || 'https://github.com/himanshu-bisht'}</div>
+                  <div className="text-slate-200 truncate">{candidate.links?.github || ''}</div>
                 </div>
                 <button
-                  onClick={() => handleCopy(candidate.links?.github || 'https://github.com/himanshu-bisht', 'GitHub')}
+                  onClick={() => handleCopy(candidate.links?.github || '', 'GitHub')}
                   className="text-slate-400 hover:text-white p-1"
                 >
                   {copiedField === 'GitHub' ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
@@ -189,10 +189,10 @@ export const ApplicationRouterModal: React.FC<ApplicationRouterModalProps> = ({
               <div className="flex items-center justify-between rounded bg-slate-900 px-3 py-2 border border-slate-800">
                 <div className="truncate pr-2">
                   <div className="text-[10px] text-slate-500">LinkedIn Profile</div>
-                  <div className="text-slate-200 truncate">{candidate.links?.linkedin || 'https://linkedin.com/in/himanshu-bisht-dev'}</div>
+                  <div className="text-slate-200 truncate">{candidate.links?.linkedin || ''}</div>
                 </div>
                 <button
-                  onClick={() => handleCopy(candidate.links?.linkedin || 'https://linkedin.com/in/himanshu-bisht-dev', 'LinkedIn')}
+                  onClick={() => handleCopy(candidate.links?.linkedin || '', 'LinkedIn')}
                   className="text-slate-400 hover:text-white p-1"
                 >
                   {copiedField === 'LinkedIn' ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
