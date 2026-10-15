@@ -111,7 +111,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <ShieldCheck className="h-3 w-3 text-emerald-400" />
               </div>
               <div className="text-[10px] text-slate-400 leading-tight">
-                {profile.education[0]?.degree?.split(' in ')[0] || 'B.Tech CSE'} (2025)
+                {profile.education[0]?.degree || 'Demo profile - replace before use'}
               </div>
             </div>
           </div>
