@@ -10,7 +10,7 @@ import {
   query,
   limit,
 } from 'firebase/firestore';
-import { Job, JobMatch, SearchRun, JobApplication } from '../../src/types';
+import { Job, JobMatch, SearchRun, Application } from '../../src/types';
 import firebaseConfigJson from '../../firebase-applet-config.json';
 
 const firebaseConfig = {
@@ -103,15 +103,15 @@ export class FirestoreService {
   /**
    * Persist application tracker record
    */
-  public static async saveApplication(application: JobApplication): Promise<void> {
+  public static async saveApplication(application: Application): Promise<void> {
     const db = getFirestoreDB();
     if (!db) return;
 
     try {
       const appData = JSON.parse(JSON.stringify(application));
-      const appRef = doc(db, 'applications', application.applicationId);
+      const appRef = doc(db, 'applications', application.id);
       await setDoc(appRef, appData, { merge: true });
-      console.log(`[Firestore] Persisted Application ${application.applicationId}`);
+      console.log(`[Firestore] Persisted Application ${application.id}`);
     } catch (err: any) {
       console.error('[Firestore saveApplication Error]:', err.message);
     }
@@ -150,4 +150,4 @@ export class FirestoreService {
     }
     return null;
   }
-}
+                                             }
