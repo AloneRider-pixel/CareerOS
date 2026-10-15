@@ -1,3 +1,4 @@
+import { mergeProfileSkills } from '../services/matchingEngine';
 import fs from 'fs';
 import path from 'path';
 import {
@@ -989,8 +990,7 @@ class Store {
 
   public updateCandidateProfile(updates: Partial<CandidateProfile>): CandidateProfile {
     this.data.candidateProfile = {
-      ...this.data.candidateProfile,
-      ...updates,
+      ...mergeProfileSkills(this.data.candidateProfile, updates),
       updatedAt: new Date().toISOString(),
     };
     this.saveData();
