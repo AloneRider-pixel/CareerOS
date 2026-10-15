@@ -143,7 +143,7 @@ export const JobCard: React.FC<JobCardProps> = ({
       {showMatchBreakdown && match && (
         <div className="my-3 rounded-lg border border-slate-800 bg-slate-950 p-3.5 text-xs animate-in fade-in duration-150">
           <div className="font-semibold text-slate-200 mb-2 flex items-center justify-between">
-            <span>Candidate Fit Breakdown (Target: Himanshu Bisht)</span>
+            <span>Candidate Fit Breakdown</span>
             <span className="text-[11px] text-slate-400">Weighted Model Calculation</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
