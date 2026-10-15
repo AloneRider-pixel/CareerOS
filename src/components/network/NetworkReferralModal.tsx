@@ -47,7 +47,7 @@ export const NetworkReferralModal: React.FC<NetworkReferralModalProps> = ({
   const currentMessage = result?.messageBody || contact.sampleMessage;
   const currentSubject =
     result?.subjectLine ||
-    `${contact.connectionDegree === 'Alumni' ? 'GEHU Alum / ' : ''}Connecting regarding ${contact.suggestedRoleForReferral} at ${contact.company}`;
+    `Connecting regarding ${contact.suggestedRoleForReferral} at ${contact.company}`;
   const currentTip =
     result?.followUpTip ||
     'Send on weekday mornings (Tuesday to Thursday, 9:30 AM - 11:00 AM IST) for highest response rates.';
