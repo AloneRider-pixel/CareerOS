@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, fix/type-contracts-and-ci]
 
 permissions:
   contents: read
