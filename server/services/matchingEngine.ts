@@ -51,8 +51,8 @@ export class MatchingEngine {
     const { mandatory, preferred } = this.categorizeRequirements(job);
 
     // 2. Candidate skill set (normalized)
-    const candidateSkillSet = new Set(candidate.skills.map((s) => s.toLowerCase().trim()));
-    const candidateProjectText = candidate.projects.map((p) => `${p.name} ${p.description} ${p.technologies.join(' ')}`).join(' ').toLowerCase();
+    const candidateSkillSet = new Set(candidate.allSkills.map((s) => s.toLowerCase().trim()));
+    const candidateProjectText = candidate.projects.map((p) => `${p.title} ${p.description.join(' ')} ${p.technologies.join(' ')}`).join(' ').toLowerCase();
 
     // 3. Technical Score (30% weight)
     const { technicalScore, matchingSkills, missingSkills, missingMandatory } = this.calculateTechnicalFit(
@@ -100,7 +100,7 @@ export class MatchingEngine {
     );
 
     // 11. Eligibility Classification
-    const { eligibility, eligibilityReason } = this.determineEligibility(
+    const { eligibility, reason: eligibilityReason } = this.determineEligibility(
       candidate,
       job,
       missingMandatory,
@@ -138,7 +138,7 @@ export class MatchingEngine {
     if (matchingSkills.some((s) => s.toLowerCase().includes('pytest'))) {
       advantages.push('Automated testing mindset with PyTest test suites and CI/CD automation.');
     }
-    if (candidate.graduationYear === 2025 && (job.experienceMin === 0 || job.description.toLowerCase().includes('fresher'))) {
+    if (candidate.education.some((entry) => entry.graduationYear === 2025) && (job.experienceMin === 0 || job.description.toLowerCase().includes('fresher'))) {
       advantages.push('2025 batch candidate directly eligible for campus/graduate engineer intake programs.');
     }
     if (advantages.length === 0) {
@@ -326,7 +326,7 @@ export class MatchingEngine {
     }
 
     // Ensure candidate's primary skills that appear in allReqs are included in matchingSkills
-    for (const skill of candidate.skills) {
+    for (const skill of candidate.allSkills) {
       const sLower = skill.toLowerCase();
       if (allReqs.some((r) => r.toLowerCase().includes(sLower))) {
         if (!matchingSkills.includes(skill)) matchingSkills.push(skill);
@@ -424,7 +424,6 @@ export class MatchingEngine {
     job: Job
   ): { educationScore: number; educationRisk?: string } {
     const descLower = (job.description + ' ' + job.requirements.join(' ')).toLowerCase();
-    const candGradYear = candidate.graduationYear || 2025;
 
     // Check for explicit older batch requirements
     if (descLower.includes('2022 batch') || descLower.includes('2023 batch only')) {
@@ -525,7 +524,7 @@ export class MatchingEngine {
    */
   private static calculateContextualKeywordFit(candidate: CandidateProfile, job: Job): number {
     const candidateTokens = new Set([
-      ...candidate.skills.map((s) => s.toLowerCase()),
+      ...candidate.allSkills.map((s) => s.toLowerCase()),
       'fastapi', 'python', 'sql', 'postgres', 'docker', 'pytest', 'rag', 'langgraph', 'airflow', 'rest', 'api'
     ]);
 
@@ -671,7 +670,7 @@ export class MatchingEngine {
       return 'P1';
     }
 
-    if (overallScore >= 60 && eligibility !== 'NOT_ELIGIBLE') {
+    if (overallScore >= 60) {
       return 'P2';
     }
 
