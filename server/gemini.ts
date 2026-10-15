@@ -435,7 +435,7 @@ export function generateDeterministicMatch(candidate: CandidateProfile, job: Job
     matchingSkills,
     missingSkills: missingSkills.slice(0, 5),
     mandatoryGaps: [],
-    advantages: [`Strong proficiency in ${matchingSkills.slice(0, 3).join(', ')}`, '2025 B.Tech degree matches fresher intake'],
+    advantages: [`Strong proficiency in ${matchingSkills.slice(0, 3).join(', ')}`, 'Review the supplied education against the job requirements'],
     rejectionRisks: ['Competitive portal applicant volume'],
     createdAt: new Date().toISOString(),
   };
@@ -510,18 +510,9 @@ Generate JSON output:
   } catch (err) {
     console.error('[Gemini Tailor Error]:', err);
     return {
-      tailoredSummary: `Early-career Software Engineer (2025 B.Tech CSE) with strong hands-on proficiency in Python, FastAPI, PostgreSQL, and modern GenAI/RAG architectures. Proven track record building resilient REST APIs, automated test suites with PyTest, and containerized Docker services. Targeted for ${job.canonicalTitle} at ${job.company}.`,
+      tailoredSummary: candidate.summary,
       highlightedSkills: candidate.primarySkills.slice(0, 8),
-      reorderedBullets: [
-        {
-          section: 'Technical Achievements',
-          bullets: [
-            'Engineered RESTful APIs with FastAPI and PostgreSQL, ensuring sub-50ms query response times and Pydantic validation.',
-            'Developed modular agentic workflows and RAG pipelines using LangGraph and vector search.',
-            'Streamlined automated testing pipelines using PyTest and GitHub Actions to ensure 90%+ code coverage.',
-          ],
-        },
-      ],
+      reorderedBullets: candidate.experience.map((experience) => ({ section: experience.title, bullets: experience.description })),
       missingKeywordsTargeted: job.requirements.slice(0, 4),
       matchScore: 88,
     };
@@ -623,7 +614,7 @@ Analyze the job description for ${job.canonicalTitle} at ${job.company} alongsid
 Generate 6 to 9 common, high-yield technical interview questions specifically expected in real technical rounds for this exact role and tech stack.
 
 CANDIDATE FACTUAL BACKGROUND:
-- Name: ${candidate.name} (B.Tech CSE 2025, Graphic Era Hill University)
+- Name: ${candidate.name}
 - Tailored Summary: ${resumeSummary}
 - Highlighted Skills: ${resumeSkills.join(', ')}
 - Candidate Projects: ${candidate.projects.map((p) => `${p.title} (${p.technologies.join(', ')}): ${p.description.join(' ')}`).join(' | ')}
@@ -659,7 +650,7 @@ Output strictly JSON matching this structure:
       "category": "FastAPI & Async Programming",
       "question": "How does FastAPI handle asynchronous requests with async/await compared to synchronous def endpoints, and how would you prevent thread-pool starvation?",
       "whyAsked": "${job.company} builds high-throughput services requiring sub-50ms latency.",
-      "candidateAngle": "Point to your TechFlow Systems internship and FastAPI Microservices project where you benchmarked async routes against database connection pools.",
+      "candidateAngle": "Use only experience and project details supplied in the candidate profile.",
       "keyConceptsToCover": ["asyncio event loop", "uvicorn worker architecture", "threadpool executor for sync def", "asyncpg vs psycopg2"],
       "sampleAnswerOutline": "1. Explain that async def runs on the main asyncio event loop while def endpoints are offloaded to an AnyIO thread pool.\n2. Emphasize using non-blocking DB drivers like asyncpg.\n3. Mention configuring appropriate worker counts and avoiding blocking CPU tasks on the event loop.",
       "difficulty": "Medium"
@@ -790,7 +781,7 @@ function generateDeterministicInterviewPrep(
         category: 'Test Automation & PyTest',
         question: `How do you structure a scalable, isolated automated integration test suite in PyTest using fixtures and ephemeral Docker containers?`,
         whyAsked: `${job.company} maintains automated CI/CD gating where test reliability and execution speed prevent broken deployments.`,
-        candidateAngle: `Highlight your FastAPI Microservices Testing Suite where you authored 120+ PyTest cases with Dockerized database fixtures.`,
+        candidateAngle: `Use a testing example from the supplied profile, if available; do not invent metrics.`,
         keyConceptsToCover: ['PyTest fixtures (scope="session", autouse)', 'Testcontainers / ephemeral DB', 'Transactional rollback per test', 'Mocking external 3P HTTP calls with respx/responses'],
         sampleAnswerOutline: `1. Spin up an isolated PostgreSQL container for the test session.\n2. Wrap each test case in a database transaction that rolls back on teardown for zero state pollution.\n3. Mock third-party APIs using deterministic fixture factories and run in parallel via pytest-xdist.`,
         difficulty: 'Medium',
@@ -902,7 +893,7 @@ export async function evaluateInterviewAnswer(
 Evaluate the candidate's spoken response to the technical question below.
 
 CANDIDATE PROFILE:
-- Name: ${candidate.name} (B.Tech CSE 2025)
+- Name: ${candidate.name}
 - Projects: ${candidate.projects.map((p) => `${p.title} (${p.technologies.join(', ')})`).join('; ')}
 - Core Skills: ${candidate.primarySkills.join(', ')}
 
@@ -936,7 +927,7 @@ Return strictly valid JSON matching this schema:
   ],
   "suggestions": [
     "State your conclusion first before diving into internal event loop semantics",
-    "Ground your answer by citing your FastAPI microservices project at TechFlow Systems"
+    "Ground your answer only in the supplied candidate profile; do not invent experience."
   ],
   "polishedSampleRevision": "In FastAPI, synchronous \`def\` endpoints are offloaded to an AnyIO thread pool, whereas \`async def\` executes directly on the single-threaded asyncio event loop. If a blocking I/O call like \`requests.get\` is made inside an \`async def\` route, it freezes the entire event loop, delaying all other concurrent requests. In my FastAPI project, we strictly used non-blocking \`httpx.AsyncClient\` and \`asyncpg\` to ensure the event loop remained unblocked.",
   "clarityAndDepthAnalysis": "Strong foundational grasp of Python asyncio internals. The response is persuasive and demonstrates practical engineering experience with minor omissions in database driver specifics."
@@ -1029,7 +1020,7 @@ export async function generateDashboardAIInsights(
 Analyze the candidate's background, current application pipeline, and India tech hiring market trends to generate strategic AI Insights.
 
 CANDIDATE FACTUAL BACKGROUND:
-- Name: ${candidate.name} (B.Tech CSE 2025, Graphic Era Hill University)
+- Name: ${candidate.name}
 - Primary Skills: ${candidate.primarySkills.join(', ')}
 - AI & GenAI Skills: ${candidate.aiSkills.join(', ')}
 - Data & Backend: ${candidate.dataSkills.join(', ')}
@@ -1160,51 +1151,16 @@ function getDeterministicDashboardAIInsights(
 ): DashboardAIInsights {
   return {
     generatedAt: new Date().toISOString(),
-    overallMarketCompetitiveness: 'Top 8th percentile for 2025 SDE 1 and AI-native software engineers in India',
-    applicationVelocityAnalysis: 'Your practical combination of high-throughput FastAPI microservices and Agentic RAG development aligns with tier-1 Indian tech product companies.',
+    overallMarketCompetitiveness: 'Not assessed - complete your own profile first',
+    applicationVelocityAnalysis: 'Demo data is illustrative, not evidence of real applications or qualifications.',
     conversionTrends: {
       appliedCount,
-      interviewRateEstimated: appliedCount > 0 ? `${Math.round((interviewCount / Math.max(1, appliedCount)) * 100)}% active rate` : '20% - 25% projected conversion',
-      keyStrengthArea: 'FastAPI Microservices & Agentic RAG Architecture',
-      highestDemandSkill: 'Python + Async IO + PostgreSQL MVCC',
+      interviewRateEstimated: appliedCount > 0 ? `${Math.round((interviewCount / Math.max(1, appliedCount)) * 100)}% sample rate` : 'Not available',
+      keyStrengthArea: candidate.primarySkills.join(', '),
+      highestDemandSkill: 'Not assessed',
     },
-    recommendedTargetCompanies: [
-      {
-        company: 'Postman',
-        recommendedRole: 'Software Engineer I - Developer Platform & Tooling',
-        interviewProbability: 'VERY HIGH',
-        probabilityScore: 94,
-        whyCandidateFits: 'Postman heavily tests API contracts and reliable test automation. Your FastAPI project with 120+ PyTest suites and Dockerized test fixtures aligns directly with their core engineering culture.',
-        matchingTechStack: ['Python', 'FastAPI', 'PyTest', 'Docker', 'REST APIs'],
-        strategicTip: 'Lead your application with your automated test coverage metrics and CI/CD GitHub Actions workflows.',
-        officialCareersUrl: 'https://www.postman.com/company/careers/',
-      },
-      {
-        company: 'Swiggy',
-        recommendedRole: 'Associate Software Engineer - AI Search & Discovery',
-        interviewProbability: 'VERY HIGH',
-        probabilityScore: 92,
-        whyCandidateFits: 'Swiggy is actively rolling out AI-driven search and conversational agents for food and quick commerce. Your LangGraph Agentic RAG Knowledge Assistant solves their real conversational retrieval challenges.',
-        matchingTechStack: ['Python', 'LangGraph', 'FastAPI', 'Vector Databases', 'Redis'],
-        strategicTip: 'In your cover summary, highlight your hybrid retrieval (BM25 + Dense vector embeddings) and sliding-window chunking experience.',
-        officialCareersUrl: 'https://careers.swiggy.com/',
-      },
-      {
-        company: 'Razorpay',
-        recommendedRole: 'Software Development Engineer 1 - Payments Backend',
-        interviewProbability: 'HIGH',
-        probabilityScore: 89,
-        whyCandidateFits: 'Razorpay requires strict ACID guarantees, idempotency keys, and sub-50ms API response latency. Your hands-on PostgreSQL optimization and async non-blocking backend design make you a high-probability candidate.',
-        matchingTechStack: ['Python', 'FastAPI', 'PostgreSQL', 'Airflow', 'AWS'],
-        strategicTip: 'Emphasize your understanding of database isolation levels, connection pooling with asyncpg, and distributed retries.',
-        officialCareersUrl: 'https://razorpay.com/jobs/',
-      },
-    ],
-    nextBestActions: [
-      'Apply to Postman and Swiggy active openings using your tailored Resume v2',
-      'Review mock interview questions on distributed rate-limiting and RAG hallucination guardrails',
-      'Follow up on applications in READY_TO_APPLY status to maintain a high application velocity',
-    ],
+    recommendedTargetCompanies: [],
+    nextBestActions: ['Replace the demo profile with your own details', 'Verify job listings before applying'],
   };
 }
 
@@ -1224,9 +1180,9 @@ export async function generateReferralOutreachMessage(
 The candidate wants to reach out to an industry contact for a software engineering referral.
 
 CANDIDATE INFO:
-- Name: ${candidate.name} (B.Tech CSE 2025, Graphic Era Hill University)
+- Name: ${candidate.name}
 - Key Skills: ${candidate.primarySkills.slice(0, 4).join(', ')}
-- Highlight Project: High-throughput FastAPI Microservices & LangGraph Agentic RAG Assistant
+- Projects: ${JSON.stringify(candidate.projects)}
 
 CONTACT INFO:
 - Name: ${contact.name}
@@ -1245,7 +1201,7 @@ Return strictly JSON:
 {
   "contactName": "${contact.name}",
   "company": "${contact.company}",
-  "subjectLine": "GEHU Alum ('25) / Aspiring SDE 1 — Quick question about ${contact.company}",
+  "subjectLine": "Interest in ${role} at ${contact.company}",
   "messageBody": "Hi ${contact.name.split(' ')[0]}...",
   "followUpTip": "If you don't hear back after 4 business days, follow up on Tuesday with a polite 1-sentence note."
 }`;
@@ -1278,8 +1234,8 @@ Return strictly JSON:
   return {
     contactName: contact.name,
     company: contact.company,
-    subjectLine: `${contact.connectionDegree === 'Alumni' ? 'GEHU Alum / ' : ''}Aspiring SDE 1 at ${contact.company}`,
-    messageBody: contact.sampleMessage || `Hi ${firstName}, hope you're having a great week! I'm Himanshu, a final-year CSE student at Graphic Era Hill University (Class of '25). I've been actively following ${contact.company}'s engineering work and saw the ${role} opening. Having built production-grade FastAPI microservices and automated testing suites, I would love to connect. Would you be comfortable reviewing my resume for an internal referral? Thank you so much for your time!`,
+    subjectLine: `Interest in ${role} at ${contact.company}`,
+    messageBody: contact.sampleMessage || `Hi ${firstName}, I am ${candidate.name}. I am interested in the ${role} opening at ${contact.company}. Would you be open to reviewing my profile?`,
     followUpTip: 'Send on weekday mornings (Tuesday to Thursday, 9:30 AM - 11:00 AM IST) for highest response rates.',
   };
 }
@@ -1489,9 +1445,10 @@ export async function generateNegotiationEmailDraft(
 Draft a highly persuasive, gracious, and professional salary negotiation email for an early-career software engineer.
 
 CANDIDATE BACKGROUND:
-- Name: ${candidate.name} (B.Tech CSE 2025, Graphic Era Hill University)
+- Name: ${candidate.name}
 - Key Skills: ${candidate.primarySkills.slice(0, 4).join(', ')}
-- Differentiators: Hands-on experience building FastAPI microservices with 120+ automated PyTest cases and production Agentic RAG LLM systems.
+- Experience: ${JSON.stringify(candidate.experience)}
+- Projects: ${JSON.stringify(candidate.projects)}
 
 OFFER & NEGOTIATION CONTEXT:
 - Employer / Company: ${company}
@@ -1580,7 +1537,7 @@ function getFallbackNegotiationDraft(
     return {
       scenario,
       subjectLine: `Regarding the ${role} Offer — ${candidate.name}`,
-      emailBody: `Dear Hiring Team,\n\nThank you so much for extending the offer to join ${company} as a ${role}. I am genuinely thrilled about the opportunity to contribute to your engineering initiatives in ${location}.\n\nAfter reviewing the terms and comparing them with current industry benchmarks for early-career backend and AI engineers in ${location} (where top-quartile compensation aligns at ${p75Str}), I would like to respectfully ask if there is flexibility to adjust the base compensation to ${target}.\n\nGiven my practical experience building asynchronous FastAPI microservices, contract-tested APIs with 120+ PyTest suites, and production Agentic RAG systems, I am confident I will ramp up rapidly and deliver immediate value to the team.\n\nI am incredibly enthusiastic about joining ${company} and would be thrilled to sign immediately if we can align around this figure. Thank you again for your time, consideration, and support throughout this process.\n\nWarm regards,\n${candidate.name}\n${candidate.email} | ${candidate.phone}`,
+      emailBody: `Dear Hiring Team,\n\nThank you so much for extending the offer to join ${company} as a ${role}. I am genuinely thrilled about the opportunity to contribute to your engineering initiatives in ${location}.\n\nAfter reviewing the terms and comparing them with current industry benchmarks for early-career backend and AI engineers in ${location} (where top-quartile compensation aligns at ${p75Str}), I would like to respectfully ask if there is flexibility to adjust the base compensation to ${target}.\n\nI would welcome the chance to discuss how my background fits the role.\n\nI am incredibly enthusiastic about joining ${company} and would be thrilled to sign immediately if we can align around this figure. Thank you again for your time, consideration, and support throughout this process.\n\nWarm regards,\n${candidate.name}\n${candidate.email} | ${candidate.phone}`,
       talkingPoints: [
         'Lead with genuine enthusiasm for the engineering team and culture at ' + company,
         `Reference the localized market data (${p75Str} 75th percentile in ${location})`,
@@ -1631,7 +1588,6 @@ function getFallbackNegotiationDraft(
     };
   }
 }
-
 
 
 
